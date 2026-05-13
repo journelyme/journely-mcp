@@ -1,0 +1,26 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Secrets — never commit
+.env
+.env.*
+!.env.example
+*.token
+*.key
+secrets.json
+
+# OS / build artifacts
+node_modules/
+.cache/
+dist/
+build/
+*.log
