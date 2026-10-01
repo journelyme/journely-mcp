@@ -10,14 +10,17 @@ Drop-in configurations and sample prompts for using the Journely MCP server.
 
 Once the MCP server is wired up, try these prompts to see how Claude orchestrates the 9 tools.
 
-### Macro + sector synthesis (combines `get_macro_indicators` + `get_sectors`)
-> *"What does the Vietnamese macro picture look like for Q2 2026, and which sectors are most exposed to the interest-rate environment? Use real data."*
+### Macro + sector synthesis (combines `get_macro_indicators` + `get_macro_forecast` + `get_sector_overview`)
+> *"What does the Vietnamese macro picture look like right now, where are rates heading, and which sectors look cheapest on P/E? Use real data."*
 
-### Single-stock deep dive (combines `get_stock_overview` + `get_stock_statements` + `get_stock_technicals`)
-> *"Give me a full update on VIC after Q4 2025 earnings — fundamentals, recent technicals, and any near-term macro catalysts."*
+### Single-stock deep dive (combines `get_stock_overview` + `get_stock_statements` + `get_stock_price_history`)
+> *"Give me a full update on VIC — 5-year revenue and margin trend, cash flow, where the price sits vs its 1-year range, and any near-term macro catalysts."*
 
-### Sector-relative analysis (combines `get_sectors` + `list_symbols` + `get_stock_overview`)
-> *"Find the three most profitable Vietnamese real estate companies by ROE and tell me which one is currently trading at the steepest discount to the sector P/E."*
+### Peer comparison (combines `get_stock_overview` + `get_stock_statements` with `type=ratios`)
+> *"Compare FPT, CMG and ELC on ROE, ROIC and EV/EBIT over the last 5 years. Which one is compounding fastest?"*
+
+### Earnings watchlist (uses `get_earnings_calendar` + `get_stock_forecast`)
+> *"When do AAPL, MSFT and NVDA report next, and what EPS is the street expecting?"*
 
 ### Macro calendar planning (uses `get_macro_calendar`)
 > *"What Vietnamese macro releases are scheduled this week, and which ones typically move the VN-Index?"*
