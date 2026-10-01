@@ -1,6 +1,6 @@
 # Contributing to Journely MCP Server
 
-Thanks for your interest in improving this project. This repository is the public-facing landing for the [Journely](https://journely.me) MCP server (hosted at `https://api.journely.me/mcp`). The server itself isn't open-source yet, so contributions here focus on **documentation, examples, integrations, and feedback**.
+Thanks for your interest in improving this project. This repository is the public-facing landing for the [Journely](https://journely.me) MCP server (hosted at `https://api.journely.me/api/v1/journely/mcp`). The server itself isn't open-source yet, so contributions here focus on **documentation, examples, integrations, and feedback**.
 
 ## What you can contribute
 

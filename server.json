@@ -1,0 +1,26 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.journelyme/journely-markets",
+  "title": "Journely Markets",
+  "description": "US, Japan and Vietnam market data: macro, sectors, fundamentals, estimates, price history.",
+  "version": "0.6.0",
+  "websiteUrl": "https://journely.me/api-docs/mcp",
+  "repository": {
+    "url": "https://github.com/journelyme/journely-mcp",
+    "source": "github"
+  },
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://api.journely.me/api/v1/journely/mcp",
+      "headers": [
+        {
+          "name": "Authorization",
+          "description": "Bearer jrn_live_… token from https://journely.me/settings/api-keys (free tier available). Not needed if your client signs in via OAuth.",
+          "isRequired": false,
+          "isSecret": true
+        }
+      ]
+    }
+  ]
+}

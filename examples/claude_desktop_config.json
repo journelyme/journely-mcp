@@ -1,10 +1,10 @@
 {
-  "_comment": "Example Claude Desktop config for the Journely MCP server. Copy the 'mcpServers' block into your existing ~/Library/Application Support/Claude/claude_desktop_config.json — do not overwrite the whole file if you already have other servers configured. Replace YOUR_TOKEN with a free token from https://journely.me/settings/api-keys",
+  "_comment": "Example Claude Desktop config for the Journely MCP server. Copy the 'mcpServers' block into your existing ~/Library/Application Support/Claude/claude_desktop_config.json — do not overwrite the whole file if you already have other servers configured. Replace jrn_live_YOUR_TOKEN with a free token from https://journely.me/settings/api-keys",
   "mcpServers": {
-    "journely": {
-      "url": "https://api.journely.me/mcp",
+    "journely-markets": {
+      "url": "https://api.journely.me/api/v1/journely/mcp",
       "headers": {
-        "Authorization": "Bearer YOUR_TOKEN"
+        "Authorization": "Bearer jrn_live_YOUR_TOKEN"
       }
     }
   }

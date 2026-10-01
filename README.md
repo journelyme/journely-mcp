@@ -5,7 +5,7 @@
   <br/>
   <p>
     <a href="https://journely.me/api-docs"><img alt="docs" src="https://img.shields.io/badge/docs-OpenAPI%203.1-blue" /></a>
-    <a href="https://journely.me/api-docs/mcp.html"><img alt="MCP" src="https://img.shields.io/badge/MCP-Streamable%20HTTP-purple" /></a>
+    <a href="https://journely.me/api-docs/mcp"><img alt="MCP" src="https://img.shields.io/badge/MCP-Streamable%20HTTP-purple" /></a>
     <img alt="License" src="https://img.shields.io/badge/license-MIT-green" />
     <img alt="Markets" src="https://img.shields.io/badge/markets-VN%20%C2%B7%20JP%20%C2%B7%20US-orange" />
   </p>
@@ -19,13 +19,13 @@
 
 ## What it is
 
-[Journely](https://journely.me) operates a public, free-tier MCP server (Model Context Protocol, [spec 2025-06-18](https://modelcontextprotocol.io/)) that gives AI agents structured access to **Vietnamese, Japanese, and US market data** — macro indicators, sector aggregates, ticker search, and per-stock fundamentals/technicals.
+[Journely](https://journely.me) operates a public, free-tier MCP server (Model Context Protocol, [spec 2025-06-18](https://modelcontextprotocol.io/)) that gives AI agents structured access to **Vietnamese, Japanese, and US market data** — macro indicators and forecasts, an economic calendar, sector aggregates, and per-stock fundamentals, analyst estimates and price history.
 
 Every MCP tool is also a REST endpoint with the same data model. So you can:
 - Wire it into Claude Desktop, Cursor, or any MCP-capable client → ask natural-language questions
 - Call it directly from any HTTP client → drop into your own AI pipeline, notebook, or app
 
-This repository is the public-facing landing for the server. **The MCP server itself runs at `https://api.journely.me/mcp`** — there's nothing to install or self-host.
+This repository is the public-facing landing for the server. **The MCP server itself runs at `https://api.journely.me/api/v1/journely/mcp`** — there's nothing to install or self-host.
 
 ## Why it exists
 
@@ -41,9 +41,9 @@ Add the server to `~/Library/Application Support/Claude/claude_desktop_config.js
 {
   "mcpServers": {
     "journely": {
-      "url": "https://api.journely.me/mcp",
+      "url": "https://api.journely.me/api/v1/journely/mcp",
       "headers": {
-        "Authorization": "Bearer YOUR_TOKEN"
+        "Authorization": "Bearer jrn_live_YOUR_TOKEN"
       }
     }
   }
@@ -53,7 +53,7 @@ Add the server to `~/Library/Application Support/Claude/claude_desktop_config.js
 Get a free token at https://journely.me/settings/api-keys. Restart Claude Desktop. All 9 tools will appear and Claude can call them automatically.
 
 Try a prompt:
-> *"Compare VIC's revenue mix to the Vietnamese real estate sector P/E."*
+> *"Pull VIC's last 5 years of revenue and margins, then check where Vietnamese inflation and rates are heading."*
 
 ### Option 2 — cURL (REST)
 
@@ -64,13 +64,13 @@ export JOURNELY_TOKEN="your-token-here"
 curl -H "Authorization: Bearer $JOURNELY_TOKEN" \
   "https://api.journely.me/api/v1/journely/data/macro/indicators?country=VN"
 
-# Search Vietnamese real estate tickers
+# VIC (Vingroup) snapshot + quote
 curl -H "Authorization: Bearer $JOURNELY_TOKEN" \
-  "https://api.journely.me/api/v1/journely/data/symbols?country=VN&sector=real-estate&limit=20"
+  "https://api.journely.me/api/v1/journely/data/stocks/VIC/overview?country=VN"
 
-# VIC financial statements
+# VIC income statement (annual)
 curl -H "Authorization: Bearer $JOURNELY_TOKEN" \
-  "https://api.journely.me/api/v1/journely/data/stocks/VIC/statements"
+  "https://api.journely.me/api/v1/journely/data/stocks/VIC/statements?country=VN&type=income"
 ```
 
 ### Option 3 — Python (or any HTTP client)
@@ -83,8 +83,8 @@ client = httpx.Client(
     headers={"Authorization": f"Bearer {TOKEN}"},
 )
 
-# All sectors with country P/E for Vietnam
-r = client.get("/data/sectors", params={"country": "VN"})
+# Sector snapshot (broad-market, not country-split): P/E, margin, 1Y change
+r = client.get("/data/sectors", params={"level": "sector"})
 print(r.json())
 ```
 
@@ -94,18 +94,20 @@ All 9 tools are exposed via both MCP and REST. One-to-one parity, same data mode
 
 | MCP tool | REST endpoint | Returns |
 |---|---|---|
-| `get_markets` | `GET /data/markets` | Index-level snapshot per country (HOSE/HNX/UPCOM for VN, plus US/JP indices) |
-| `list_symbols` | `GET /data/symbols` | Ticker search — filter by country, type, sector, free-text. Paginated. |
-| `get_macro_indicators` | `GET /data/macro/indicators` | GDP, inflation, labor, monetary aggregates |
-| `get_macro_forecast` | `GET /data/macro/forecast` | Forward-looking macro projections |
-| `get_macro_calendar` | `GET /data/macro/calendar` | Upcoming macro releases with country + category |
-| `get_sectors` | `GET /data/sectors` | Sector-level aggregates + country P/E |
-| `get_stock_overview` | `GET /data/stocks/{symbol}/overview` | Company snapshot, key ratios |
-| `get_stock_statements` | `GET /data/stocks/{symbol}/statements` | Income statement, balance sheet, cash flow |
-| `get_stock_technicals` | `GET /data/stocks/{symbol}/technicals` | Price action, indicators, volume |
+| `get_macro_indicators` | `GET /data/macro/indicators` | GDP, inflation, labor, rates panel for US / JP / VN |
+| `get_macro_forecast` | `GET /data/macro/forecast` | Forward-looking macro projections (4–8 quarters) |
+| `get_macro_calendar` | `GET /data/macro/calendar` | Upcoming economic events (FOMC, CPI, NFP, GDP) with previous / forecast / actual |
+| `get_sector_overview` | `GET /data/sectors` | Sector (11) or industry (145) snapshot — P/E, margin, dividend yield, 1D/1Y change. Broad-market, not country-split |
+| `get_stock_overview` | `GET /data/stocks/{symbol}/overview` | Company snapshot + live quote — any US / JP / VN ticker |
+| `get_stock_statements` | `GET /data/stocks/{symbol}/statements` | Income, balance sheet, cash flow, or ratios (ROIC, FCF yield, EV/EBIT) — annual or quarterly |
+| `get_stock_forecast` | `GET /data/stocks/{symbol}/forecast` | Analyst consensus, price targets, rating trend |
+| `get_stock_price_history` | `GET /data/stocks/{symbol}/history` | Closing prices — full daily for US; ~1Y daily + long-horizon snapshot for JP / VN |
+| `get_earnings_calendar` | `GET /data/earnings-calendar` | Upcoming earnings dates + EPS / revenue estimates for a list of US tickers |
+
+There is no ticker-search tool — pass any US / JP / VN symbol you already know (e.g. `AAPL`, `7203`, `FPT`).
 
 Full OpenAPI 3.1 spec with interactive ReDoc UI: **https://journely.me/api-docs**
-MCP transport details and tool schemas: **https://journely.me/api-docs/mcp.html**
+MCP transport details and tool schemas: **https://journely.me/api-docs/mcp**
 
 ## Pricing
 
@@ -113,8 +115,11 @@ Free tier with reasonable rate limits — designed for indie developers, researc
 
 | Tier | Price | Rate limit | Notes |
 |---|---|---|---|
-| **Free** | $0 | 100 calls / day / key | Covers ~95% of indie use cases |
-| Paid tiers | — | — | Available if you need more — talk to us before you hit the limit |
+| **Free** | $0 | 100 / day · 30 / hour | 1 key |
+| Pro | see [pricing](https://journely.me/pricing) | 5,000 / day · 500 / hour | 5 keys |
+| Max | see [pricing](https://journely.me/pricing) | 50,000 / day · 5,000 / hour | 20 keys |
+
+Only `tools/call` counts against quota — `initialize`, `tools/list` and `ping` are free.
 
 No card required to get a free key. No marketing emails after signup.
 
@@ -147,8 +152,9 @@ No card required to get a free key. No marketing emails after signup.
 
 | | |
 |---|---|
-| **MCP transport** | Streamable HTTP (spec 2025-06-18) |
-| **Server** | Live at `https://api.journely.me/mcp` |
+| **MCP transport** | Streamable HTTP (spec 2025-06-18), stateless |
+| **Auth** | Bearer token (`jrn_live_…`), or OAuth 2.1 + PKCE for clients that support remote-connector sign-in (discovery at `/.well-known/oauth-protected-resource`) |
+| **Server** | Live at `https://api.journely.me/api/v1/journely/mcp` |
 | **Region** | Asia-Pacific (low-latency for VN/JP users; ~150-300ms US round-trip) |
 | **Uptime target** | Best-effort; this is a community-free service. SLA available for paid tiers. |
 
