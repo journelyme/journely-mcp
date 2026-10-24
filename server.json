@@ -3,7 +3,7 @@
   "name": "io.github.journelyme/journely-markets",
   "title": "Journely Markets",
   "description": "US, Japan and Vietnam market data: macro, sectors, fundamentals, estimates, price history.",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "websiteUrl": "https://journely.me/api-docs/mcp",
   "repository": {
     "url": "https://github.com/journelyme/journely-mcp",

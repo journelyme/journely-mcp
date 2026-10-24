@@ -16,7 +16,12 @@ The actual MCP server runs at `https://api.journely.me/api/v1/journely/mcp` and 
 ### Added
 - `server.json` for the official MCP Registry (remote Streamable HTTP endpoint)
 
-### Server (0.6.0, current)
+### Server (0.7.0, current)
+- Macro is dated: indicator rows carry `unit` + `period`; macro responses carry `data_timestamp`, `stale`, `source`
+- `get_macro_indicators`: `view=key` (headline subset per country), `labor` / `labour` alias
+- `get_macro_calendar`: about two weeks ahead incl. Vietnam, per-event `datetime_utc`, `days_back` / `days_ahead` window
+
+### Server (0.6.0)
 - 0.3.0 removed `get_markets`, `list_symbols`, `get_sectors`, `get_stock_technicals`
 - 0.3.0–0.6.0 added `get_stock_forecast`, `get_stock_price_history`, `get_sector_overview`, `get_earnings_calendar`
 - OAuth 2.1 + PKCE discovery (`/.well-known/oauth-protected-resource`) alongside bearer tokens

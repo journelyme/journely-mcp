@@ -94,9 +94,9 @@ All 9 tools are exposed via both MCP and REST. One-to-one parity, same data mode
 
 | MCP tool | REST endpoint | Returns |
 |---|---|---|
-| `get_macro_indicators` | `GET /data/macro/indicators` | GDP, inflation, labor, rates panel for US / JP / VN |
+| `get_macro_indicators` | `GET /data/macro/indicators` | GDP, inflation, labor, rates panel for US / JP / VN — `view=key` for ~12 headlines; every row dated (`period`) with its `unit` |
 | `get_macro_forecast` | `GET /data/macro/forecast` | Forward-looking macro projections (4–8 quarters) |
-| `get_macro_calendar` | `GET /data/macro/calendar` | Upcoming economic events (FOMC, CPI, NFP, GDP) with previous / forecast / actual |
+| `get_macro_calendar` | `GET /data/macro/calendar` | Economic events for US / JP / VN about two weeks ahead (FOMC, BoJ, CPI, NFP, GDP) with exact UTC time, previous / consensus / forecast / actual |
 | `get_sector_overview` | `GET /data/sectors` | Sector (11) or industry (145) snapshot — P/E, margin, dividend yield, 1D/1Y change. Broad-market, not country-split |
 | `get_stock_overview` | `GET /data/stocks/{symbol}/overview` | Company snapshot + live quote — any US / JP / VN ticker |
 | `get_stock_statements` | `GET /data/stocks/{symbol}/statements` | Income, balance sheet, cash flow, or ratios (ROIC, FCF yield, EV/EBIT) — annual or quarterly |
